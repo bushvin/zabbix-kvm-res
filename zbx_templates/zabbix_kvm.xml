@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>2.0</version>
-    <date>2014-08-29T08:23:33Z</date>
+    <date>2014-08-29T09:18:51Z</date>
     <groups>
         <group>
             <name>KVM</name>
@@ -285,85 +285,7 @@
                     <description>discovery of KVM pools</description>
                     <item_prototypes>
                         <item_prototype>
-                            <name>Pool $1 active</name>
-                            <type>0</type>
-                            <snmp_community/>
-                            <multiplier>0</multiplier>
-                            <snmp_oid/>
-                            <key>custom.kvm.pool.active[{#POOLNAME}]</key>
-                            <delay>60</delay>
-                            <history>7</history>
-                            <trends>365</trends>
-                            <status>0</status>
-                            <value_type>3</value_type>
-                            <allowed_hosts/>
-                            <units/>
-                            <delta>0</delta>
-                            <snmpv3_securityname/>
-                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                            <snmpv3_authpassphrase/>
-                            <snmpv3_privpassphrase/>
-                            <formula>1</formula>
-                            <delay_flex/>
-                            <params/>
-                            <ipmi_sensor/>
-                            <data_type>3</data_type>
-                            <authtype>0</authtype>
-                            <username/>
-                            <password/>
-                            <publickey/>
-                            <privatekey/>
-                            <port/>
-                            <description/>
-                            <inventory_link>0</inventory_link>
-                            <applications>
-                                <application>
-                                    <name>KVM Pools</name>
-                                </application>
-                            </applications>
-                            <valuemap/>
-                        </item_prototype>
-                        <item_prototype>
-                            <name>Pool $1 size of $2</name>
-                            <type>0</type>
-                            <snmp_community/>
-                            <multiplier>0</multiplier>
-                            <snmp_oid/>
-                            <key>custom.kvm.pool.size[total,{#POOLNAME}]</key>
-                            <delay>60</delay>
-                            <history>7</history>
-                            <trends>365</trends>
-                            <status>0</status>
-                            <value_type>3</value_type>
-                            <allowed_hosts/>
-                            <units>B</units>
-                            <delta>0</delta>
-                            <snmpv3_securityname/>
-                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                            <snmpv3_authpassphrase/>
-                            <snmpv3_privpassphrase/>
-                            <formula>1</formula>
-                            <delay_flex/>
-                            <params/>
-                            <ipmi_sensor/>
-                            <data_type>0</data_type>
-                            <authtype>0</authtype>
-                            <username/>
-                            <password/>
-                            <publickey/>
-                            <privatekey/>
-                            <port/>
-                            <description/>
-                            <inventory_link>0</inventory_link>
-                            <applications>
-                                <application>
-                                    <name>KVM Pools</name>
-                                </application>
-                            </applications>
-                            <valuemap/>
-                        </item_prototype>
-                        <item_prototype>
-                            <name>Pool $1 size of $2</name>
+                            <name>Pool free size of {#POOLNAME}</name>
                             <type>0</type>
                             <snmp_community/>
                             <multiplier>0</multiplier>
@@ -402,7 +324,46 @@
                             <valuemap/>
                         </item_prototype>
                         <item_prototype>
-                            <name>Pool $1 size of $2</name>
+                            <name>Pool total size of {#POOLNAME}</name>
+                            <type>0</type>
+                            <snmp_community/>
+                            <multiplier>0</multiplier>
+                            <snmp_oid/>
+                            <key>custom.kvm.pool.size[total,{#POOLNAME}]</key>
+                            <delay>60</delay>
+                            <history>7</history>
+                            <trends>365</trends>
+                            <status>0</status>
+                            <value_type>3</value_type>
+                            <allowed_hosts/>
+                            <units>B</units>
+                            <delta>0</delta>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privpassphrase/>
+                            <formula>1</formula>
+                            <delay_flex/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <data_type>0</data_type>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>KVM Pools</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Pool used size of {#POOLNAME}</name>
                             <type>0</type>
                             <snmp_community/>
                             <multiplier>0</multiplier>
@@ -441,7 +402,46 @@
                             <valuemap/>
                         </item_prototype>
                         <item_prototype>
-                            <name>UUID of pool $1</name>
+                            <name>Pool {#POOLNAME} active</name>
+                            <type>0</type>
+                            <snmp_community/>
+                            <multiplier>0</multiplier>
+                            <snmp_oid/>
+                            <key>custom.kvm.pool.active[{#POOLNAME}]</key>
+                            <delay>60</delay>
+                            <history>7</history>
+                            <trends>365</trends>
+                            <status>0</status>
+                            <value_type>3</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <delta>0</delta>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privpassphrase/>
+                            <formula>1</formula>
+                            <delay_flex/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <data_type>3</data_type>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>KVM Pools</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>UUID of pool {#POOLNAME}</name>
                             <type>0</type>
                             <snmp_community/>
                             <multiplier>0</multiplier>
@@ -483,7 +483,7 @@
                     <trigger_prototypes/>
                     <graph_prototypes>
                         <graph_prototype>
-                            <name>Pool space usage {#FSNAME}</name>
+                            <name>Pool space usage {#POOLNAME}</name>
                             <width>900</width>
                             <height>200</height>
                             <yaxismin>0.0000</yaxismin>
