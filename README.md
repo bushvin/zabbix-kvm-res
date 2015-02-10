@@ -5,7 +5,12 @@ KVM monitoring through Zabbix
 
 Monitor your KVM resources through Zabbix
 
-INSTALLATION
+Dependencies
+=============
+python2
+libvirt-python
+
+Installation
 ============
 1. copy bin/zabbix-kvm-res.py to /usr/local/bin/
 2. append zabbix_agentd.conf/UserParameters to /etc/zabbix_agentd.conf (or whatever location your zabbix_agentd.conf file is located at)

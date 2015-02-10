@@ -41,7 +41,7 @@ def main():
 def domain_list(options):
   conn = kvm_connect()
   r = []
-  for domain in conn.listAllDomains():
+  for domain in conn.listAllDomains(0):
     r.append('\t\t{"{#DOMAINNAME}":"'+domain.name()+'"}')
   return '{ \n\t"data":[\n' +",\n".join(r) +'] \n}'
 
@@ -57,7 +57,7 @@ def domain_uuid(options):
 def net_list(options):
   conn = kvm_connect()
   r = []
-  for net in conn.listAllNetworks():
+  for net in conn.listAllNetworks(0):
     r.append('\t\t{"{#NETNAME}":"'+net.name()+'"}')
   return '{ \n\t"data":[\n' +",\n".join(r) +'] \n}'
 
@@ -73,7 +73,7 @@ def net_uuid(options):
 def pool_list(options):
   conn = kvm_connect()
   r = []
-  for pool in conn.listAllStoragePools():
+  for pool in conn.listAllStoragePools(0):
      r.append('\t\t{"{#POOLNAME}":"'+pool.name()+'"}')
   return '{ \n\t"data":[\n' +",\n".join(r) +'] \n}'
 
@@ -133,14 +133,10 @@ def parse_args():
     parser.error("Resource has to be one of: "+", ".join(valid_resource_types))
  
   if options.resource == "pool":
-#    if options.pool == None:
-#      parser.error("You must specify a pool name")
     pool_valid_actions = [ 'list', 'total', 'used', 'free', 'active', 'UUID' ]
     if options.action not in pool_valid_actions:
       parser.error("Action hass to be one of: "+", ".join(pool_valid_actions))
   elif options.resource == "net":
-#    if options.net == None:
-#      parser.error("You must specify a network name")
     net_valid_actions = [ 'list', 'active', 'UUID' ]
     if options.action not in net_valid_actions:
       parser.error("Action hass to be one of: "+", ".join(net_valid_actions))
