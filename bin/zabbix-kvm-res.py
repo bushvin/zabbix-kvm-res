@@ -1,9 +1,12 @@
 #!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
 
 # zabbix-kvm-res.py
 # this tool returns information for zabbix monitoring (and possibly other monitoring solutions)
 import libvirt
 import sys
+import json
+
 from optparse import OptionParser
 
 def main():
@@ -35,15 +38,23 @@ def main():
       r = domain_isActive(options)
     elif options.action == "UUID":
       r = domain_uuid(options)
-
+  
   print r
 
 def domain_list(options):
   conn = kvm_connect()
-  r = []
-  for domain in conn.listAllDomains(0):
-    r.append('\t\t{"{#DOMAINNAME}":"'+domain.name()+'"}')
-  return '{ \n\t"data":[\n' +",\n".join(r) +'] \n}'
+  r = { "data": [] }
+  try:
+    conn.listAllDomains(0)
+  except:
+    domains = []
+    for dom_id in conn.listDomainsID():
+      r['data'].append( {"{#DOMAINNAME}": conn.lookupByID(dom_id).name()} )
+  else:
+    for domain in conn.listAllDomains(0):
+      r["data"].append( {"{#DOMAINNAME}": domain.name()} )
+
+  return json.dumps(r, indent=2, sort_keys=True, encoding="utf-8")
 
 def domain_isActive(options):
   conn = kvm_connect()
@@ -56,10 +67,17 @@ def domain_uuid(options):
 
 def net_list(options):
   conn = kvm_connect()
-  r = []
-  for net in conn.listAllNetworks(0):
-    r.append('\t\t{"{#NETNAME}":"'+net.name()+'"}')
-  return '{ \n\t"data":[\n' +",\n".join(r) +'] \n}'
+  r = { "data": [] }
+  try:
+    conn.listAllNetworks(0)
+  except:
+    for net in conn.listNetworks():
+      r["data"].append( {"{#NETNAME}": net} )
+  else:
+    for net in conn.listAllNetworks(0):
+      r["data"].append( {"{#NETNAME}": net.name()} )
+
+  return json.dumps(r, indent=2, sort_keys=True, encoding="utf-8")
 
 def net_isActive(options):
   conn = kvm_connect()
@@ -72,10 +90,17 @@ def net_uuid(options):
 
 def pool_list(options):
   conn = kvm_connect()
-  r = []
-  for pool in conn.listAllStoragePools(0):
-     r.append('\t\t{"{#POOLNAME}":"'+pool.name()+'"}')
-  return '{ \n\t"data":[\n' +",\n".join(r) +'] \n}'
+  r = { "data": [] }
+  try:
+    conn.listAllStoragePools(0)
+  except:
+    for pool in conn.listStoragePools():
+      r["data"].append( {"{#POOLNAME}": pool} )
+  else:
+    for pool in conn.listAllStoragePools(0):
+      r["data"].append( {"{#POOLNAME}": pool.name()} )
+
+  return json.dumps(r, indent=2, sort_keys=True, encoding="utf-8")
 
 def pool_total(options):
   return pool_info(options)[1]
