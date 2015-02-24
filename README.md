@@ -7,7 +7,7 @@ Monitor your KVM resources through Zabbix
 
 Dependencies
 =============
-python2, libvirt-python (tested with 0.9.12.3 and 1.1.3.x)
+python2, libvirt-python (tested with 0.9.12.3, 0.10.2 and 1.1.3.x)
 
 Installation
 ============
