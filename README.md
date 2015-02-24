@@ -7,8 +7,7 @@ Monitor your KVM resources through Zabbix
 
 Dependencies
 =============
-python2
-libvirt-python
+python2, libvirt-python (tested with 0.9.12.3 and 1.1.3.x)
 
 Installation
 ============
@@ -18,3 +17,9 @@ Installation
 4. import zbx_templates/zabbix_kvm.xml into your templates
 5. apply template to kvm system
 6. drink coffee and enjoy
+
+Acknowledgements
+================
+- [Patrik Uytterhoeven](https://github.com/Trikke76) for putting it out there
+- [thirstycat](https://github.com/thirstycat) for helping out with the flags of some libvirt methods
+- Stefano Blasco for providing feedback and code to make it work with libvirt-python 0.9.12.3)
