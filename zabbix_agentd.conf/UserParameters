@@ -1,3 +1,4 @@
+UserParameter=custom.kvm.pool.discover,/usr/local/bin/zabbix-kvm-res.py --resource pool --action list
 UserParameter=custom.kvm.pool.size[*],/usr/local/bin/zabbix-kvm-res.py --resource pool --action $1 --pool $2
 UserParameter=custom.kvm.pool.active[*],/usr/local/bin/zabbix-kvm-res.py --resource pool --action active --pool $1
 UserParameter=custom.kvm.pool.uuid[*],/usr/local/bin/zabbix-kvm-res.py --resource pool --action UUID --pool $1
