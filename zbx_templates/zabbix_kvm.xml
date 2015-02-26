@@ -112,7 +112,7 @@
                             <multiplier>0</multiplier>
                             <snmp_oid/>
                             <key>custom.kvm.domain.uuid[{#DOMAINNAME}]</key>
-                            <delay>60</delay>
+                            <delay>86400</delay>
                             <history>90</history>
                             <trends>365</trends>
                             <status>0</status>
@@ -222,7 +222,7 @@
                             <multiplier>0</multiplier>
                             <snmp_oid/>
                             <key>custom.kvm.pool.uuid[{#NETNAME}]</key>
-                            <delay>60</delay>
+                            <delay>86400</delay>
                             <history>90</history>
                             <trends>365</trends>
                             <status>0</status>
@@ -291,7 +291,7 @@
                             <multiplier>0</multiplier>
                             <snmp_oid/>
                             <key>custom.kvm.pool.size[free,{#POOLNAME}]</key>
-                            <delay>60</delay>
+                            <delay>3600</delay>
                             <history>7</history>
                             <trends>365</trends>
                             <status>0</status>
@@ -330,7 +330,7 @@
                             <multiplier>0</multiplier>
                             <snmp_oid/>
                             <key>custom.kvm.pool.size[total,{#POOLNAME}]</key>
-                            <delay>60</delay>
+                            <delay>3600</delay>
                             <history>7</history>
                             <trends>365</trends>
                             <status>0</status>
@@ -369,7 +369,7 @@
                             <multiplier>0</multiplier>
                             <snmp_oid/>
                             <key>custom.kvm.pool.size[used,{#POOLNAME}]</key>
-                            <delay>60</delay>
+                            <delay>3600</delay>
                             <history>7</history>
                             <trends>365</trends>
                             <status>0</status>
@@ -447,7 +447,7 @@
                             <multiplier>0</multiplier>
                             <snmp_oid/>
                             <key>custom.kvm.pool.uuid[{#POOLNAME}]</key>
-                            <delay>60</delay>
+                            <delay>86400</delay>
                             <history>90</history>
                             <trends>365</trends>
                             <status>0</status>
