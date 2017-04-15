@@ -5,6 +5,8 @@ KVM monitoring through Zabbix
 
 Monitor your KVM resources through Zabbix
 
+**Warning:** this has only been tested on Zabbix 1.8 and 2.0
+
 Dependencies
 =============
 python2, libvirt-python (tested with 0.9.12.3, 0.10.2 and 1.1.3.x)
