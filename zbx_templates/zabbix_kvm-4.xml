@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>4.4</version>
+    <date>2020-06-07T16:42:54Z</date>
+    <groups>
+        <group>
+            <name>Hypervisors</name>
+        </group>
+        <group>
+            <name>Templates/Applications</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template App libvirt by Zabbix Agent</template>
+            <name>Template App libvirt by Zabbix Agent</name>
+            <description>Get metrics about the libvirt daemon, domains, networks, storage pools and - volumes through the Zabbix Agent</description>
+            <groups>
+                <group>
+                    <name>Hypervisors</name>
+                </group>
+                <group>
+                    <name>Templates/Applications</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>KVM Domains</name>
+                </application>
+                <application>
+                    <name>KVM Networks</name>
+                </application>
+                <application>
+                    <name>KVM Storage Pools</name>
+                </application>
+                <application>
+                    <name>KVM Storage Volumes</name>
+                </application>
+            </applications>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>KVM Domain discovery</name>
+                    <key>custom.kvm.domain.discover</key>
+                    <delay>1h</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#DOMAINNAME}</macro>
+                                <value>.*</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Domain $1 active</name>
+                            <key>custom.kvm.domain.active[{#DOMAINNAME}]</key>
+                            <history>7d</history>
+                            <description>Is the domain running or not&#13;
+0 - No&#13;
+1 - Yes</description>
+                            <applications>
+                                <application>
+                                    <name>KVM Domains</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>UUID of Domain $1</name>
+                            <key>custom.kvm.domain.uuid[{#DOMAINNAME}]</key>
+                            <delay>24h</delay>
+                            <trends>0</trends>
+                            <value_type>CHAR</value_type>
+                            <applications>
+                                <application>
+                                    <name>KVM Domains</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>KVM Network discovery</name>
+                    <key>custom.kvm.net.discover</key>
+                    <delay>1h</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#NETNAME}</macro>
+                                <value>.*</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Network $1 active</name>
+                            <key>custom.kvm.net.active[{#NETNAME}]</key>
+                            <description>Is the network up or not&#13;
+0 - No&#13;
+1 - Yes</description>
+                            <applications>
+                                <application>
+                                    <name>KVM Networks</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>UUID of Network $1</name>
+                            <key>custom.kvm.pool.uuid[{#NETNAME}]</key>
+                            <delay>24h</delay>
+                            <trends>0</trends>
+                            <value_type>CHAR</value_type>
+                            <applications>
+                                <application>
+                                    <name>KVM Networks</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>KVM Storage Pool discovery</name>
+                    <key>custom.kvm.pool.discover</key>
+                    <delay>1h</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#POOLNAME}</macro>
+                                <value>.*</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Pool {#POOLNAME} active</name>
+                            <key>custom.kvm.pool.active[{#POOLNAME}]</key>
+                            <description>Is the storage pool running;&#13;
+0 - No&#13;
+1 - Yes</description>
+                            <applications>
+                                <application>
+                                    <name>KVM Storage Pools</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Pool free size of {#POOLNAME}</name>
+                            <key>custom.kvm.pool.size[free,{#POOLNAME}]</key>
+                            <delay>1h</delay>
+                            <history>7d</history>
+                            <units>B</units>
+                            <description>Show the free size of KVM storage pools</description>
+                            <applications>
+                                <application>
+                                    <name>KVM Storage Pools</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Pool total size of {#POOLNAME}</name>
+                            <key>custom.kvm.pool.size[total,{#POOLNAME}]</key>
+                            <delay>1h</delay>
+                            <history>7d</history>
+                            <description>Show the total (used + free) siz eof KVM storage pools</description>
+                            <applications>
+                                <application>
+                                    <name>KVM Storage Pools</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Pool used size of {#POOLNAME}</name>
+                            <key>custom.kvm.pool.size[used,{#POOLNAME}]</key>
+                            <delay>1h</delay>
+                            <history>7d</history>
+                            <description>Show the used size of KVM storage pools</description>
+                            <applications>
+                                <application>
+                                    <name>KVM Storage Pools</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>UUID of pool {#POOLNAME}</name>
+                            <key>custom.kvm.pool.uuid[{#POOLNAME}]</key>
+                            <delay>24h</delay>
+                            <description>Show the UUID of a storage pool</description>
+                            <applications>
+                                <application>
+                                    <name>KVM Storage Pools</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                    </item_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <name>Pool space usage {#POOLNAME}</name>
+                            <type>STACKED</type>
+                            <ymin_type_1>FIXED</ymin_type_1>
+                            <ymax_type_1>FIXED</ymax_type_1>
+                            <graph_items>
+                                <graph_item>
+                                    <color>00C800</color>
+                                    <item>
+                                        <host>Template App libvirt by Zabbix Agent</host>
+                                        <key>custom.kvm.pool.size[free,{#POOLNAME}]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <color>CC0000</color>
+                                    <item>
+                                        <host>Template App libvirt by Zabbix Agent</host>
+                                        <key>custom.kvm.pool.size[used,{#POOLNAME}]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
+                </discovery_rule>
+            </discovery_rules>
+        </template>
+    </templates>
+</zabbix_export>
