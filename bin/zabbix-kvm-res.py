@@ -1,178 +1,207 @@
-#!/usr/bin/python -tt
+#!/bin/env python
 # -*- coding: utf-8 -*-
 
-# zabbix-kvm-res.py
-# this tool returns information for zabbix monitoring (and possibly other monitoring solutions)
-import libvirt
+from __future__ import print_function
+
 import sys
 import json
-
 from optparse import OptionParser
+import argparse
+
+try:
+    import libvirt
+except ModuleNotFoundError as e:
+    print("Python module libvirt is most likely not installed, Please install python-libvirt", file=sys.stderr)
+    sys.exit(1)
 
 def main():
-  options = parse_args()
-  if options.resource == "pool":
-    if options.action == "list":
-      r = pool_list(options)
-    elif options.action == "total":
-      r = pool_total(options)
-    elif options.action == "used":
-      r = pool_used(options)
-    elif options.action == "free":
-      r = pool_free(options)
-    elif options.action == "active":
-      r = pool_isActive(options)
-    elif options.action == "UUID":
-      r = pool_uuid(options)
-  elif options.resource == "net":
-    if options.action == "list":
-      r = net_list(options)
-    elif options.action == "active":
-      r = net_isActive(options)
-    elif options.action == "UUID":
-      r = net_uuid(options)
-  elif options.resource == "domain":
-    if options.action == "list":
-      r = domain_list(options)
-    elif options.action == "active":
-      r = domain_isActive(options)
-    elif options.action == "UUID":
-      r = domain_uuid(options)
+    args = parse_args()
+    if args.resource == "pool":
+        if args.action == "list":
+            pool = Pool(uri=args.uri)
+            is_none(pool.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = json.dumps(list_to_zbx(pool.list(), '{#POOLNAME}'), sort_keys=True, encoding='utf-8', indent=2)
+        elif args.action == "total":
+            pool = Pool(args.pool,uri=args.uri)
+            is_none(pool.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = pool.size['total']
+        elif args.action == "used":
+            pool = Pool(args.pool,uri=args.uri)
+            is_none(pool.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = pool.size['used']
+        elif args.action == "free":
+            pool = Pool(args.pool,uri=args.uri)
+            is_none(pool.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = pool.size['free']
+        elif args.action == "active":
+            pool = Pool(args.pool,uri=args.uri)
+            is_none(pool.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = pool.isactive
+        elif args.action == "UUID":
+            pool = Pool(args.pool,uri=args.uri)
+            is_none(pool.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = pool.uuid
+
+    elif args.resource == "net":
+        if args.action == "list":
+            net = Net(uri=args.uri)
+            is_none(net.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = json.dumps(list_to_zbx(net.list(), '{#NETNAME}'), sort_keys=True, encoding='utf-8', indent=2)
+        elif args.action == "active":
+            net = Net(args.net,uri=args.uri)
+            is_none(net.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = net.isactive
+        elif args.action == "UUID":
+            net = Net(args.net,uri=args.uri)
+            is_none(net.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = net.uuid
+
+    elif args.resource == "domain":
+        if args.action == "list":
+            dom = Domain(uri=args.uri)
+            is_none(dom.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = json.dumps(list_to_zbx(dom.list(), '{#DOMAINNAME}'), sort_keys=True, encoding='utf-8', indent=2)
+        elif args.action == "active":
+            dom = Domain(args.domain,uri=args.uri)
+            is_none(dom.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = dom.isactive
+        elif args.action == "UUID":
+            dom = Domain(args.domain,uri=args.uri)
+            is_none(dom.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = dom.uuid
   
-  print r
+    print(r)
 
-def domain_list(options):
-  conn = kvm_connect()
-  r = { "data": [] }
-  try:
-    conn.listAllDomains(0)
-  except:
-    domains = []
-    for dom_id in conn.listDomainsID():
-      r['data'].append( {"{#DOMAINNAME}": conn.lookupByID(dom_id).name()} )
-  else:
-    for domain in conn.listAllDomains(0):
-      r["data"].append( {"{#DOMAINNAME}": domain.name()} )
+class Libvirt(object):
+    def __init__(self, uri='qemu:///system'):
+        self.uri = uri
+        self.conn = None
+        self.connect()
+        if self.conn is not None and self.name is not None:
+            self.get_info()
 
-  return json.dumps(r, indent=2, sort_keys=True, encoding="utf-8")
+    def get_info(self):
+        return None
+    
+    def connect(self, uri = None):
+        if uri is None:
+            uri = self.uri
+        try:
+            self.conn = libvirt.openReadOnly(uri)
+        except:
+            print("There was an error connecting to the local libvirt daemon using '%s'." % uri, file=sys.stderr)
+            self.conn = None
+        return self.conn
 
-def domain_isActive(options):
-  conn = kvm_connect()
-  return conn.lookupByName(options.domain).isActive()
+class Domain(Libvirt):
+    def __init__(self, domain=None, uri='qemu:///system'):
+        self.name = domain
+        super(self.__class__, self).__init__(uri)
+    
+    def get_info(self):
+        self.domain = self.conn.lookupByName(self.name)
+        self.isactive = self.domain.isActive()
+        self.uuid = self.domain.UUIDString()
+        return self.domain
 
-def domain_uuid(options):
-  conn = kvm_connect()
-  return conn.lookupByName(options.domain).UUIDString()
+    def list(self):
+        self.domainlist = []
+        
+        try:
+            self.domainlist = [  d.name() for d in self.conn.listAllDomains(0) ]
+        except:
+            self.domainlist = [ self.conn.lookupById(i).name() for i in self.conn.listDomainsID() ]
+        
+        self.domainlist.sort()
+        return self.domainlist
 
+class Net(Libvirt):
+    def __init__(self, net=None, uri='qemu:///system'):
+        self.name = net
+        super(self.__class__, self).__init__(uri)
 
-def net_list(options):
-  conn = kvm_connect()
-  r = { "data": [] }
-  try:
-    conn.listAllNetworks(0)
-  except:
-    for net in conn.listNetworks():
-      r["data"].append( {"{#NETNAME}": net} )
-  else:
-    for net in conn.listAllNetworks(0):
-      r["data"].append( {"{#NETNAME}": net.name()} )
+    def get_info(self):
+        self.net = self.conn.networkLookupByName(self.name)
+        self.isactive = self.net.isActive()
+        self.uuid = self.net.UUIDString()
+        return self.net
 
-  return json.dumps(r, indent=2, sort_keys=True, encoding="utf-8")
+    def list(self):
+        self.netlist = []
 
-def net_isActive(options):
-  conn = kvm_connect()
-  return conn.networkLookupByName(options.net).isActive()
+        try:
+            self.netlist = [ n.name() for n in self.conn.listAllNetworks(0) ]
+        except:
+            self.netlist = self.conn.listNetworks()
 
-def net_uuid(options):
-  conn = kvm_connect()
-  return conn.networkLookupByName(options.net).UUIDString()
+        self.netlist.sort()
+        return self.netlist
 
+class Pool(Libvirt):
+    def __init__(self, pool=None, uri='qemu:///system'):
+        self.name = pool
+        super(self.__class__, self).__init__(uri)
+ 
+    def get_info(self):
+        self.pool = self.conn.storagePoolLookupByName(self.name)
+        self.size = { 'total': self.pool.info()[1],
+                      'free': self.pool.info()[3],
+                      'used': self.pool.info()[2]
+                    }
+        self.isactive = self.pool.isActive()
+        self.uuid = self.pool.UUIDString()
 
-def pool_list(options):
-  conn = kvm_connect()
-  r = { "data": [] }
-  try:
-    conn.listAllStoragePools(0)
-  except:
-    for pool in conn.listStoragePools():
-      r["data"].append( {"{#POOLNAME}": pool} )
-  else:
-    for pool in conn.listAllStoragePools(0):
-      r["data"].append( {"{#POOLNAME}": pool.name()} )
+    def list(self):
+        self.poollist = []
+        try:
+            self.poollist = [ p.name() for p in self.conn.listAllStoragePools(0) ]
+        except:
+            self.poollist = self.conn.listStoragePools()
 
-  return json.dumps(r, indent=2, sort_keys=True, encoding="utf-8")
+        self.poollist.sort()
+        return self.poollist
 
-def pool_total(options):
-  return pool_info(options)[1]
+def is_none(data, errormsg, rc):
+    if data is None:
+        print(errormsg, file=sys.stderr)
+        sys.exit(rc)
 
-def pool_used(options):
-  return pool_info(options)[2]
+def list_to_zbx(data, label):
+    if not isinstance(data, (list,tuple)):
+        return data
 
-def pool_free(options):
-  return pool_info(options)[3]
-
-def pool_isActive(options):
-  conn = kvm_connect()
-  return conn.storagePoolLookupByName(options.pool).isActive()
-
-def pool_uuid(options):
-  conn = kvm_connect()
-  return conn.storagePoolLookupByName(options.pool).UUIDString()
-
-def pool_info(options):
-  if options.pool == None:
-    sys.stderr.write("There was an error connecting to pool.\n")
-    exit(1)
-  conn = kvm_connect()
-  try:
-    info = conn.storagePoolLookupByName(options.pool).info()
-  except:
-    sys.stderr.write("There was an error connecting to pool '"+options.pool+"'.")
-    exit(1)
-  return info
-
-
-def kvm_connect():
-  try:
-    conn = libvirt.openReadOnly('qemu:///system')
-  except:
-    sys.stderr.write("There was an error connecting to the local libvirt daemon using '"+uri+"'.")
-    exit(1)
-  return conn
+    r = dict(data=[])
+    return { 'data': [ { label: e } for e in data ] }
 
 def parse_args():
-  parser = OptionParser()
-  valid_resource_types = [ "pool", "net", "domain" ]
-  valid_actions = [ "discover", "capacity", "allocation", "available" ]
-
-
-  parser.add_option("", "--resource", dest="resource", help="Resource type to be queried", action="store", type="string", default=None)
-  parser.add_option("", "--action", dest="action", help="The name of the action to be performed", action="store", type="string", default=None)
-
-  parser.add_option("", "--pool", dest="pool", help="The name of the pool to be queried", action="store", type="string", default=None)
-  parser.add_option("", "--net", dest="net", help="The name of the net to be queried", action="store", type="string", default=None)
-  parser.add_option("", "--domain", dest="domain", help="The name of the domain to be queried", action="store", type="string", default=None)
-
-  (options, args) = parser.parse_args()
-  if options.resource not in valid_resource_types:
-    parser.error("Resource has to be one of: "+", ".join(valid_resource_types))
- 
-  if options.resource == "pool":
+    valid_resource_types = [ "pool", "net", "domain" ]
     pool_valid_actions = [ 'list', 'total', 'used', 'free', 'active', 'UUID' ]
-    if options.action not in pool_valid_actions:
-      parser.error("Action hass to be one of: "+", ".join(pool_valid_actions))
-  elif options.resource == "net":
     net_valid_actions = [ 'list', 'active', 'UUID' ]
-    if options.action not in net_valid_actions:
-      parser.error("Action hass to be one of: "+", ".join(net_valid_actions))
-  elif options.resource == "domain":
     domain_valid_actions = [ 'list', 'active', 'UUID' ]
-    if options.action not in domain_valid_actions:
-      parser.error("Action hass to be one of: "+", ".join(domain_valid_actions))
-    
- 
 
-  return options
+    parser = argparse.ArgumentParser(description='Return KVM information for Zabbix parsing')
+    parser.add_argument('-U', '--uri', help="Connection URI", metavar='URI', type=str, default='qemu:///system')
+    parser.add_argument('-R', '--resource', metavar='RESOURCE', dest='resource', help='Resource type to be queried', type=str, default=None)
+    parser.add_argument('-A', '--action', metavar='ACTION', dest='action', help='The name of the action to be performed', type=str, default=None)
+    parser.add_argument('-d', '--domain', metavar='DOMAIN', dest='domain', help='The name of the domain to be queried', type=str, default=None)
+    parser.add_argument('-n', '--net', metavar='NET', dest='net', help='The name of the net to be queried', type=str, default=None)
+    parser.add_argument('-p', '--pool', metavar='POOL', dest='pool', help='The name of the pool to be queried', type=str, default=None)
+    
+    args = parser.parse_args()
+    if args.resource not in valid_resource_types:
+        parser.error("Resource has to be one of: "+", ".join(valid_resource_types))
+
+    if args.resource == "pool":
+        if args.action not in pool_valid_actions:
+            parser.error("Action hass to be one of: "+", ".join(pool_valid_actions))
+    elif args.resource == "net":
+        if args.action not in net_valid_actions:
+            parser.error("Action hass to be one of: "+", ".join(net_valid_actions))
+    elif args.resource == "domain":
+        if args.action not in domain_valid_actions:
+            parser.error("Action hass to be one of: "+", ".join(domain_valid_actions))
+
+    return args
 
 if __name__ == "__main__":
-  main()
+    main()
