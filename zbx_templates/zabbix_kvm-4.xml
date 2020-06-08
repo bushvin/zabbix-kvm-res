@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.4</version>
-    <date>2020-06-07T16:42:54Z</date>
+    <date>2020-06-08T12:01:34Z</date>
     <groups>
         <group>
             <name>Hypervisors</name>
@@ -25,21 +25,107 @@
             </groups>
             <applications>
                 <application>
-                    <name>KVM Domains</name>
+                    <name>Libvirt Domains</name>
                 </application>
                 <application>
-                    <name>KVM Networks</name>
+                    <name>Libvirt Host</name>
                 </application>
                 <application>
-                    <name>KVM Storage Pools</name>
+                    <name>Libvirt Networks</name>
                 </application>
                 <application>
-                    <name>KVM Storage Volumes</name>
+                    <name>Libvirt Storage Pools</name>
+                </application>
+                <application>
+                    <name>Libvirt Storage Volumes</name>
                 </application>
             </applications>
+            <items>
+                <item>
+                    <name>Number of active domains</name>
+                    <key>libvirt.domaincount.active</key>
+                    <description>The number of active domains</description>
+                    <applications>
+                        <application>
+                            <name>Libvirt Host</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Number of inactive domains</name>
+                    <key>libvirt.domaincount.inactive</key>
+                    <applications>
+                        <application>
+                            <name>Libvirt Host</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Number of active networks</name>
+                    <key>libvirt.netcount.active</key>
+                    <description>Number of active Networks</description>
+                    <applications>
+                        <application>
+                            <name>Libvirt Host</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Number of inactive networks</name>
+                    <key>libvirt.netcount.inactive</key>
+                    <description>Number of inactive networks</description>
+                    <applications>
+                        <application>
+                            <name>Libvirt Host</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Number of active storage pools</name>
+                    <key>libvirt.poolcount.active</key>
+                    <description>Number of active storage pools</description>
+                    <applications>
+                        <application>
+                            <name>Libvirt Host</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Number of inactive storage pools</name>
+                    <key>libvirt.poolcount.inactive</key>
+                    <description>Number of inactive storage pools</description>
+                    <applications>
+                        <application>
+                            <name>Libvirt Host</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Libvirt type</name>
+                    <key>libvirt.type</key>
+                    <delay>1d</delay>
+                    <description>Provide the type of virtualization.</description>
+                    <applications>
+                        <application>
+                            <name>Libvirt Host</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Libvirt version</name>
+                    <key>libvirt.version</key>
+                    <delay>1d</delay>
+                    <description>Get the version of Libvirt running on the host</description>
+                    <applications>
+                        <application>
+                            <name>Libvirt Host</name>
+                        </application>
+                    </applications>
+                </item>
+            </items>
             <discovery_rules>
                 <discovery_rule>
-                    <name>KVM Domain discovery</name>
+                    <name>Libvirt Domain discovery</name>
                     <key>libvirt.domain.discover</key>
                     <delay>1h</delay>
                     <filter>
@@ -61,7 +147,29 @@
 1 - Yes</description>
                             <applications>
                                 <application>
-                                    <name>KVM Domains</name>
+                                    <name>Libvirt Domains</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Domain $1 current memory</name>
+                            <key>libvirt.domain.memory_current[{#DOMAINNAME}]</key>
+                            <units>B</units>
+                            <description>The currently assigned memory to the guest</description>
+                            <applications>
+                                <application>
+                                    <name>Libvirt Domains</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Domain $1 maximum memory</name>
+                            <key>libvirt.domain.memory_max[{#DOMAINNAME}]</key>
+                            <units>B</units>
+                            <description>The maximum possible amount of memory available to the guest</description>
+                            <applications>
+                                <application>
+                                    <name>Libvirt Domains</name>
                                 </application>
                             </applications>
                         </item_prototype>
@@ -73,14 +181,76 @@
                             <value_type>CHAR</value_type>
                             <applications>
                                 <application>
-                                    <name>KVM Domains</name>
+                                    <name>Libvirt Domains</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Domain $1 current number of vpcus</name>
+                            <key>libvirt.domain.vcpus_current[{#DOMAINNAME}]</key>
+                            <description>The current amount of assigned vcpus to the guest</description>
+                            <applications>
+                                <application>
+                                    <name>Libvirt Domains</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Domain {#DOMAINNAME} maximum number of vpcus</name>
+                            <key>libvirt.domain.vcpus_max[{#DOMAINNAME}]</key>
+                            <description>The maximum amount of  vcpus of the guest</description>
+                            <applications>
+                                <application>
+                                    <name>Libvirt Domains</name>
                                 </application>
                             </applications>
                         </item_prototype>
                     </item_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <name>Domain memory ({#DOMAINNAME})</name>
+                            <graph_items>
+                                <graph_item>
+                                    <color>1A7C11</color>
+                                    <item>
+                                        <host>Template App libvirt by Zabbix Agent</host>
+                                        <key>libvirt.domain.memory_current[{#DOMAINNAME}]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <color>2774A4</color>
+                                    <item>
+                                        <host>Template App libvirt by Zabbix Agent</host>
+                                        <key>libvirt.domain.memory_max[{#DOMAINNAME}]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                        <graph_prototype>
+                            <name>Domain vcpus ({#DOMAINNAME})</name>
+                            <graph_items>
+                                <graph_item>
+                                    <color>1A7C11</color>
+                                    <item>
+                                        <host>Template App libvirt by Zabbix Agent</host>
+                                        <key>libvirt.domain.vcpus_current[{#DOMAINNAME}]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <color>2774A4</color>
+                                    <item>
+                                        <host>Template App libvirt by Zabbix Agent</host>
+                                        <key>libvirt.domain.vcpus_max[{#DOMAINNAME}]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
                 </discovery_rule>
                 <discovery_rule>
-                    <name>KVM Network discovery</name>
+                    <name>Libvirt Network discovery</name>
                     <key>libvirt.net.discover</key>
                     <delay>1h</delay>
                     <filter>
@@ -101,7 +271,7 @@
 1 - Yes</description>
                             <applications>
                                 <application>
-                                    <name>KVM Networks</name>
+                                    <name>Libvirt Networks</name>
                                 </application>
                             </applications>
                         </item_prototype>
@@ -113,14 +283,14 @@
                             <value_type>CHAR</value_type>
                             <applications>
                                 <application>
-                                    <name>KVM Networks</name>
+                                    <name>Libvirt Networks</name>
                                 </application>
                             </applications>
                         </item_prototype>
                     </item_prototypes>
                 </discovery_rule>
                 <discovery_rule>
-                    <name>KVM Storage Pool discovery</name>
+                    <name>Libvirt Storage Pool discovery</name>
                     <key>libvirt.pool.discover</key>
                     <delay>1h</delay>
                     <filter>
@@ -141,44 +311,41 @@
 1 - Yes</description>
                             <applications>
                                 <application>
-                                    <name>KVM Storage Pools</name>
+                                    <name>Libvirt Storage Pools</name>
                                 </application>
                             </applications>
                         </item_prototype>
                         <item_prototype>
                             <name>Pool free size of {#POOLNAME}</name>
                             <key>libvirt.pool.size[free,{#POOLNAME}]</key>
-                            <delay>1h</delay>
                             <history>7d</history>
                             <units>B</units>
-                            <description>Show the free size of KVM storage pools</description>
+                            <description>Show the free size of Libvirt storage pools</description>
                             <applications>
                                 <application>
-                                    <name>KVM Storage Pools</name>
+                                    <name>Libvirt Storage Pools</name>
                                 </application>
                             </applications>
                         </item_prototype>
                         <item_prototype>
                             <name>Pool total size of {#POOLNAME}</name>
                             <key>libvirt.pool.size[total,{#POOLNAME}]</key>
-                            <delay>1h</delay>
                             <history>7d</history>
-                            <description>Show the total (used + free) siz eof KVM storage pools</description>
+                            <description>Show the total (used + free) siz of Libvirt storage pools</description>
                             <applications>
                                 <application>
-                                    <name>KVM Storage Pools</name>
+                                    <name>Libvirt Storage Pools</name>
                                 </application>
                             </applications>
                         </item_prototype>
                         <item_prototype>
                             <name>Pool used size of {#POOLNAME}</name>
                             <key>libvirt.pool.size[used,{#POOLNAME}]</key>
-                            <delay>1h</delay>
                             <history>7d</history>
-                            <description>Show the used size of KVM storage pools</description>
+                            <description>Show the used size of Libvirt storage pools</description>
                             <applications>
                                 <application>
-                                    <name>KVM Storage Pools</name>
+                                    <name>Libvirt Storage Pools</name>
                                 </application>
                             </applications>
                         </item_prototype>
@@ -189,7 +356,7 @@
                             <description>Show the UUID of a storage pool</description>
                             <applications>
                                 <application>
-                                    <name>KVM Storage Pools</name>
+                                    <name>Libvirt Storage Pools</name>
                                 </application>
                             </applications>
                         </item_prototype>
@@ -223,4 +390,69 @@
             </discovery_rules>
         </template>
     </templates>
+    <graphs>
+        <graph>
+            <name>Number of domains</name>
+            <type>STACKED</type>
+            <graph_items>
+                <graph_item>
+                    <color>1A7C11</color>
+                    <item>
+                        <host>Template App libvirt by Zabbix Agent</host>
+                        <key>libvirt.domaincount.active</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <color>0080FF</color>
+                    <item>
+                        <host>Template App libvirt by Zabbix Agent</host>
+                        <key>libvirt.domaincount.inactive</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>Number of networks</name>
+            <type>STACKED</type>
+            <graph_items>
+                <graph_item>
+                    <color>0080FF</color>
+                    <item>
+                        <host>Template App libvirt by Zabbix Agent</host>
+                        <key>libvirt.netcount.inactive</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <color>1A7C11</color>
+                    <item>
+                        <host>Template App libvirt by Zabbix Agent</host>
+                        <key>libvirt.netcount.active</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>Number of storage pools</name>
+            <type>STACKED</type>
+            <graph_items>
+                <graph_item>
+                    <color>1A7C11</color>
+                    <item>
+                        <host>Template App libvirt by Zabbix Agent</host>
+                        <key>libvirt.poolcount.active</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <color>0080FF</color>
+                    <item>
+                        <host>Template App libvirt by Zabbix Agent</host>
+                        <key>libvirt.poolcount.inactive</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+    </graphs>
 </zabbix_export>
