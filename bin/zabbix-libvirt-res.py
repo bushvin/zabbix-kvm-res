@@ -105,7 +105,6 @@ class Libvirt(object):
         self.connect()
         if self.conn is not None and self.name is not None:
             self.get_info()
-        self.conn.close()
 
     def get_info(self):
         self.version = self.conn.getVersion()
@@ -121,6 +120,9 @@ class Libvirt(object):
             print("There was an error connecting to the local libvirt daemon using '%s'." % uri, file=sys.stderr)
             self.conn = None
         return self.conn
+
+    def disconnect(self):
+        return self.conn.close()
 
 class Host(Libvirt):
     def __init__(self, uri='qemu:///system'):
@@ -149,7 +151,7 @@ class Domain(Libvirt):
 
     def list(self):
         self.domainlist = []
-        
+        print(self.conn.listAllDomains(0))
         try:
             self.domainlist = [  d.name() for d in self.conn.listAllDomains(0) ]
         except:
