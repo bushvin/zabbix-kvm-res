@@ -4,7 +4,7 @@
     <date>2014-08-29T09:18:51Z</date>
     <groups>
         <group>
-            <name>KVM</name>
+            <name>libvirt</name>
         </group>
         <group>
             <name>Templates</name>
@@ -16,7 +16,7 @@
             <name>Template App libvirt</name>
             <groups>
                 <group>
-                    <name>KVM</name>
+                    <name>libvirt</name>
                 </group>
                 <group>
                     <name>Templates</name>
@@ -24,22 +24,22 @@
             </groups>
             <applications>
                 <application>
-                    <name>KVM Domains</name>
+                    <name>Libvirt Domains</name>
                 </application>
                 <application>
-                    <name>KVM Networks</name>
+                    <name>Libvirt Networks</name>
                 </application>
                 <application>
-                    <name>KVM Pools</name>
+                    <name>Libvirt Pools</name>
                 </application>
                 <application>
-                    <name>KVM Volumes</name>
+                    <name>Libvirt Volumes</name>
                 </application>
             </applications>
             <items/>
             <discovery_rules>
                 <discovery_rule>
-                    <name>KVM Domain discovery</name>
+                    <name>Libvirt Domain discovery</name>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
@@ -100,7 +100,7 @@
                             <inventory_link>0</inventory_link>
                             <applications>
                                 <application>
-                                    <name>KVM Domains</name>
+                                    <name>Libvirt Domains</name>
                                 </application>
                             </applications>
                             <valuemap/>
@@ -139,7 +139,7 @@
                             <inventory_link>0</inventory_link>
                             <applications>
                                 <application>
-                                    <name>KVM Domains</name>
+                                    <name>Libvirt Domains</name>
                                 </application>
                             </applications>
                             <valuemap/>
@@ -149,7 +149,7 @@
                     <graph_prototypes/>
                 </discovery_rule>
                 <discovery_rule>
-                    <name>KVM Network discovery</name>
+                    <name>Libvirt Network discovery</name>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
@@ -210,7 +210,7 @@
                             <inventory_link>0</inventory_link>
                             <applications>
                                 <application>
-                                    <name>KVM Networks</name>
+                                    <name>Libvirt Networks</name>
                                 </application>
                             </applications>
                             <valuemap/>
@@ -249,7 +249,7 @@
                             <inventory_link>0</inventory_link>
                             <applications>
                                 <application>
-                                    <name>KVM Networks</name>
+                                    <name>Libvirt Networks</name>
                                 </application>
                             </applications>
                             <valuemap/>
@@ -259,7 +259,7 @@
                     <graph_prototypes/>
                 </discovery_rule>
                 <discovery_rule>
-                    <name>KVM Pool discovery</name>
+                    <name>Libvirt Pool discovery</name>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
@@ -282,7 +282,7 @@
                     <port/>
                     <filter>{#POOLNAME}:.*</filter>
                     <lifetime>30</lifetime>
-                    <description>discovery of KVM pools</description>
+                    <description>discovery of Libvirt pools</description>
                     <item_prototypes>
                         <item_prototype>
                             <name>Pool free size of {#POOLNAME}</name>
@@ -318,7 +318,7 @@
                             <inventory_link>0</inventory_link>
                             <applications>
                                 <application>
-                                    <name>KVM Pools</name>
+                                    <name>Libvirt Pools</name>
                                 </application>
                             </applications>
                             <valuemap/>
@@ -357,7 +357,7 @@
                             <inventory_link>0</inventory_link>
                             <applications>
                                 <application>
-                                    <name>KVM Pools</name>
+                                    <name>Libvirt Pools</name>
                                 </application>
                             </applications>
                             <valuemap/>
@@ -396,7 +396,7 @@
                             <inventory_link>0</inventory_link>
                             <applications>
                                 <application>
-                                    <name>KVM Pools</name>
+                                    <name>Libvirt Pools</name>
                                 </application>
                             </applications>
                             <valuemap/>
@@ -435,7 +435,7 @@
                             <inventory_link>0</inventory_link>
                             <applications>
                                 <application>
-                                    <name>KVM Pools</name>
+                                    <name>Libvirt Pools</name>
                                 </application>
                             </applications>
                             <valuemap/>
@@ -474,7 +474,7 @@
                             <inventory_link>0</inventory_link>
                             <applications>
                                 <application>
-                                    <name>KVM Pools</name>
+                                    <name>Libvirt Pools</name>
                                 </application>
                             </applications>
                             <valuemap/>
