@@ -40,7 +40,7 @@
             <discovery_rules>
                 <discovery_rule>
                     <name>KVM Domain discovery</name>
-                    <key>custom.kvm.domain.discover</key>
+                    <key>libvirt.domain.discover</key>
                     <delay>1h</delay>
                     <filter>
                         <conditions>
@@ -54,7 +54,7 @@
                     <item_prototypes>
                         <item_prototype>
                             <name>Domain $1 active</name>
-                            <key>custom.kvm.domain.active[{#DOMAINNAME}]</key>
+                            <key>libvirt.domain.active[{#DOMAINNAME}]</key>
                             <history>7d</history>
                             <description>Is the domain running or not&#13;
 0 - No&#13;
@@ -67,7 +67,7 @@
                         </item_prototype>
                         <item_prototype>
                             <name>UUID of Domain $1</name>
-                            <key>custom.kvm.domain.uuid[{#DOMAINNAME}]</key>
+                            <key>libvirt.domain.uuid[{#DOMAINNAME}]</key>
                             <delay>24h</delay>
                             <trends>0</trends>
                             <value_type>CHAR</value_type>
@@ -81,7 +81,7 @@
                 </discovery_rule>
                 <discovery_rule>
                     <name>KVM Network discovery</name>
-                    <key>custom.kvm.net.discover</key>
+                    <key>libvirt.net.discover</key>
                     <delay>1h</delay>
                     <filter>
                         <conditions>
@@ -95,7 +95,7 @@
                     <item_prototypes>
                         <item_prototype>
                             <name>Network $1 active</name>
-                            <key>custom.kvm.net.active[{#NETNAME}]</key>
+                            <key>libvirt.net.active[{#NETNAME}]</key>
                             <description>Is the network up or not&#13;
 0 - No&#13;
 1 - Yes</description>
@@ -107,7 +107,7 @@
                         </item_prototype>
                         <item_prototype>
                             <name>UUID of Network $1</name>
-                            <key>custom.kvm.pool.uuid[{#NETNAME}]</key>
+                            <key>libvirt.pool.uuid[{#NETNAME}]</key>
                             <delay>24h</delay>
                             <trends>0</trends>
                             <value_type>CHAR</value_type>
@@ -121,7 +121,7 @@
                 </discovery_rule>
                 <discovery_rule>
                     <name>KVM Storage Pool discovery</name>
-                    <key>custom.kvm.pool.discover</key>
+                    <key>libvirt.pool.discover</key>
                     <delay>1h</delay>
                     <filter>
                         <conditions>
@@ -135,7 +135,7 @@
                     <item_prototypes>
                         <item_prototype>
                             <name>Pool {#POOLNAME} active</name>
-                            <key>custom.kvm.pool.active[{#POOLNAME}]</key>
+                            <key>libvirt.pool.active[{#POOLNAME}]</key>
                             <description>Is the storage pool running;&#13;
 0 - No&#13;
 1 - Yes</description>
@@ -147,7 +147,7 @@
                         </item_prototype>
                         <item_prototype>
                             <name>Pool free size of {#POOLNAME}</name>
-                            <key>custom.kvm.pool.size[free,{#POOLNAME}]</key>
+                            <key>libvirt.pool.size[free,{#POOLNAME}]</key>
                             <delay>1h</delay>
                             <history>7d</history>
                             <units>B</units>
@@ -160,7 +160,7 @@
                         </item_prototype>
                         <item_prototype>
                             <name>Pool total size of {#POOLNAME}</name>
-                            <key>custom.kvm.pool.size[total,{#POOLNAME}]</key>
+                            <key>libvirt.pool.size[total,{#POOLNAME}]</key>
                             <delay>1h</delay>
                             <history>7d</history>
                             <description>Show the total (used + free) siz eof KVM storage pools</description>
@@ -172,7 +172,7 @@
                         </item_prototype>
                         <item_prototype>
                             <name>Pool used size of {#POOLNAME}</name>
-                            <key>custom.kvm.pool.size[used,{#POOLNAME}]</key>
+                            <key>libvirt.pool.size[used,{#POOLNAME}]</key>
                             <delay>1h</delay>
                             <history>7d</history>
                             <description>Show the used size of KVM storage pools</description>
@@ -184,7 +184,7 @@
                         </item_prototype>
                         <item_prototype>
                             <name>UUID of pool {#POOLNAME}</name>
-                            <key>custom.kvm.pool.uuid[{#POOLNAME}]</key>
+                            <key>libvirt.pool.uuid[{#POOLNAME}]</key>
                             <delay>24h</delay>
                             <description>Show the UUID of a storage pool</description>
                             <applications>
@@ -205,7 +205,7 @@
                                     <color>00C800</color>
                                     <item>
                                         <host>Template App libvirt by Zabbix Agent</host>
-                                        <key>custom.kvm.pool.size[free,{#POOLNAME}]</key>
+                                        <key>libvirt.pool.size[free,{#POOLNAME}]</key>
                                     </item>
                                 </graph_item>
                                 <graph_item>
@@ -213,7 +213,7 @@
                                     <color>CC0000</color>
                                     <item>
                                         <host>Template App libvirt by Zabbix Agent</host>
-                                        <key>custom.kvm.pool.size[used,{#POOLNAME}]</key>
+                                        <key>libvirt.pool.size[used,{#POOLNAME}]</key>
                                     </item>
                                 </graph_item>
                             </graph_items>

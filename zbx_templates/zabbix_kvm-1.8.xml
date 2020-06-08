@@ -43,7 +43,7 @@
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>custom.kvm.domain.discover</key>
+                    <key>libvirt.domain.discover</key>
                     <delay>3600</delay>
                     <status>0</status>
                     <allowed_hosts/>
@@ -70,7 +70,7 @@
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
-                            <key>custom.kvm.domain.active[{#DOMAINNAME}]</key>
+                            <key>libvirt.domain.active[{#DOMAINNAME}]</key>
                             <delay>60</delay>
                             <history>90</history>
                             <trends>365</trends>
@@ -111,7 +111,7 @@
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
-                            <key>custom.kvm.domain.uuid[{#DOMAINNAME}]</key>
+                            <key>libvirt.domain.uuid[{#DOMAINNAME}]</key>
                             <delay>86400</delay>
                             <history>90</history>
                             <trends>365</trends>
@@ -153,7 +153,7 @@
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>custom.kvm.net.discover</key>
+                    <key>libvirt.net.discover</key>
                     <delay>3600</delay>
                     <status>0</status>
                     <allowed_hosts/>
@@ -180,7 +180,7 @@
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
-                            <key>custom.kvm.net.active[{#NETNAME}]</key>
+                            <key>libvirt.net.active[{#NETNAME}]</key>
                             <delay>60</delay>
                             <history>7</history>
                             <trends>365</trends>
@@ -221,7 +221,7 @@
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
-                            <key>custom.kvm.pool.uuid[{#NETNAME}]</key>
+                            <key>libvirt.pool.uuid[{#NETNAME}]</key>
                             <delay>86400</delay>
                             <history>90</history>
                             <trends>365</trends>
@@ -263,7 +263,7 @@
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>custom.kvm.pool.discover</key>
+                    <key>libvirt.pool.discover</key>
                     <delay>3600</delay>
                     <status>0</status>
                     <allowed_hosts/>
@@ -290,7 +290,7 @@
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
-                            <key>custom.kvm.pool.size[free,{#POOLNAME}]</key>
+                            <key>libvirt.pool.size[free,{#POOLNAME}]</key>
                             <delay>3600</delay>
                             <history>7</history>
                             <trends>365</trends>
@@ -329,7 +329,7 @@
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
-                            <key>custom.kvm.pool.size[total,{#POOLNAME}]</key>
+                            <key>libvirt.pool.size[total,{#POOLNAME}]</key>
                             <delay>3600</delay>
                             <history>7</history>
                             <trends>365</trends>
@@ -368,7 +368,7 @@
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
-                            <key>custom.kvm.pool.size[used,{#POOLNAME}]</key>
+                            <key>libvirt.pool.size[used,{#POOLNAME}]</key>
                             <delay>3600</delay>
                             <history>7</history>
                             <trends>365</trends>
@@ -407,7 +407,7 @@
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
-                            <key>custom.kvm.pool.active[{#POOLNAME}]</key>
+                            <key>libvirt.pool.active[{#POOLNAME}]</key>
                             <delay>60</delay>
                             <history>7</history>
                             <trends>365</trends>
@@ -446,7 +446,7 @@
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
-                            <key>custom.kvm.pool.uuid[{#POOLNAME}]</key>
+                            <key>libvirt.pool.uuid[{#POOLNAME}]</key>
                             <delay>86400</delay>
                             <history>90</history>
                             <trends>365</trends>
@@ -509,7 +509,7 @@
                                     <type>0</type>
                                     <item>
                                         <host>Template_App_libvirt</host>
-                                        <key>custom.kvm.pool.size[used,{#POOLNAME}]</key>
+                                        <key>libvirt.pool.size[used,{#POOLNAME}]</key>
                                     </item>
                                 </graph_item>
                                 <graph_item>
@@ -521,7 +521,7 @@
                                     <type>0</type>
                                     <item>
                                         <host>Template_App_libvirt</host>
-                                        <key>custom.kvm.pool.size[free,{#POOLNAME}]</key>
+                                        <key>libvirt.pool.size[free,{#POOLNAME}]</key>
                                     </item>
                                 </graph_item>
                             </graph_items>
