@@ -69,6 +69,32 @@ def main():
             dom = Domain(args.domain,uri=args.uri)
             is_none(dom.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
             r = dom.uuid
+        elif args.action == 'vcpus_current':
+            dom = Domain(args.domain,uri=args.uri)
+            is_none(dom.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = dom.vcpus['current']
+        elif args.action == 'vcpus_max':
+            dom = Domain(args.domain,uri=args.uri)
+            is_none(dom.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = dom.vcpus['max']
+        elif args.action == 'memory_current':
+            dom = Domain(args.domain,uri=args.uri)
+            is_none(dom.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = dom.memory['current']
+        elif args.action == 'memory_max':
+            dom = Domain(args.domain,uri=args.uri)
+            is_none(dom.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = dom.memory['max']
+
+    elif args.resource == "host":
+        if args.action == "version":
+            kvm = Host(uri=args.uri)
+            is_none(kvm.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = kvm.version
+        elif args.action == "type":
+            kvm = Host(uri=args.uri)
+            is_none(kvm.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = kvm.type
   
     print(r)
 
@@ -79,8 +105,11 @@ class Libvirt(object):
         self.connect()
         if self.conn is not None and self.name is not None:
             self.get_info()
+        self.conn.close()
 
     def get_info(self):
+        self.version = self.conn.getVersion()
+        self.type = self.conn.getType()
         return None
     
     def connect(self, uri = None):
@@ -93,6 +122,16 @@ class Libvirt(object):
             self.conn = None
         return self.conn
 
+class Host(Libvirt):
+    def __init__(self, uri='qemu:///system'):
+        self.name = 'n/a'
+        super(self.__class__, self).__init__(uri)
+
+    def get_info(self):
+        self.version = self.conn.getVersion()
+        self.type = self.conn.getType()
+        return None
+
 class Domain(Libvirt):
     def __init__(self, domain=None, uri='qemu:///system'):
         self.name = domain
@@ -102,6 +141,10 @@ class Domain(Libvirt):
         self.domain = self.conn.lookupByName(self.name)
         self.isactive = self.domain.isActive()
         self.uuid = self.domain.UUIDString()
+        self.vcpus = { 'current': len(self.domain.vcpus()[0]),
+                       'max': self.domain.maxVcpus() }
+        self.memory = { 'current': self.domain.memoryStats()['actual'],
+                        'max': self.domain.maxMemory() }
         return self.domain
 
     def list(self):
@@ -174,10 +217,11 @@ def list_to_zbx(data, label):
     return { 'data': [ { label: e } for e in data ] }
 
 def parse_args():
-    valid_resource_types = [ "pool", "net", "domain" ]
+    valid_resource_types = [ "pool", "net", "domain", "host" ]
     pool_valid_actions = [ 'list', 'total', 'used', 'free', 'active', 'UUID' ]
     net_valid_actions = [ 'list', 'active', 'UUID' ]
-    domain_valid_actions = [ 'list', 'active', 'UUID' ]
+    domain_valid_actions = [ 'list', 'active', 'UUID', 'vcpus_current', 'vcpus_max', 'memory_current', 'memory_max' ]
+    host_valid_actions = [ "version", "type" ]
 
     parser = argparse.ArgumentParser(description='Return KVM information for Zabbix parsing')
     parser.add_argument('-U', '--uri', help="Connection URI", metavar='URI', type=str, default='qemu:///system')
@@ -200,6 +244,9 @@ def parse_args():
     elif args.resource == "domain":
         if args.action not in domain_valid_actions:
             parser.error("Action hass to be one of: "+", ".join(domain_valid_actions))
+    elif args.resource == "host":
+        if args.action not in host_valid_actions:
+            parser.error("Action hass to be one of: "+", ".join(host_valid_actions))
 
     return args
 
