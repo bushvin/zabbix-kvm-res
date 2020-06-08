@@ -21,6 +21,14 @@ def main():
             pool = Pool(uri=args.uri)
             is_none(pool.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
             r = json.dumps(list_to_zbx(pool.list(), '{#POOLNAME}'), sort_keys=True, encoding='utf-8', indent=2)
+        elif args.action == "count_active":
+            pool = Pool(uri=args.uri)
+            is_none(pool.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = len(pool.list(active=True))
+        elif args.action == "count_inactive":
+            pool = Pool(uri=args.uri)
+            is_none(pool.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = len(pool.list(active=False))
         elif args.action == "total":
             pool = Pool(args.pool,uri=args.uri)
             is_none(pool.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
@@ -41,12 +49,21 @@ def main():
             pool = Pool(args.pool,uri=args.uri)
             is_none(pool.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
             r = pool.uuid
+        pool.disconnect()
 
     elif args.resource == "net":
         if args.action == "list":
             net = Net(uri=args.uri)
             is_none(net.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
             r = json.dumps(list_to_zbx(net.list(), '{#NETNAME}'), sort_keys=True, encoding='utf-8', indent=2)
+        elif args.action == "count_active":
+            net = Net(uri=args.uri)
+            is_none(net.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = len(net.list(active=True))
+        elif args.action == "count_inactive":
+            net = Net(uri=args.uri)
+            is_none(net.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = len(net.list(active=False))
         elif args.action == "active":
             net = Net(args.net,uri=args.uri)
             is_none(net.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
@@ -55,12 +72,21 @@ def main():
             net = Net(args.net,uri=args.uri)
             is_none(net.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
             r = net.uuid
+        net.disconnect()
 
     elif args.resource == "domain":
         if args.action == "list":
             dom = Domain(uri=args.uri)
             is_none(dom.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
             r = json.dumps(list_to_zbx(dom.list(), '{#DOMAINNAME}'), sort_keys=True, encoding='utf-8', indent=2)
+        elif args.action == "count_active":
+            dom = Domain(uri=args.uri)
+            is_none(dom.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = len(dom.list(active=True))
+        elif args.action == "count_inactive":
+            dom = Domain(uri=args.uri)
+            is_none(dom.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = len(dom.list(active=False))
         elif args.action == "active":
             dom = Domain(args.domain,uri=args.uri)
             is_none(dom.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
@@ -85,16 +111,18 @@ def main():
             dom = Domain(args.domain,uri=args.uri)
             is_none(dom.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
             r = dom.memory['max']
+        dom.disconnect()
 
     elif args.resource == "host":
         if args.action == "version":
-            kvm = Host(uri=args.uri)
+            host = Host(uri=args.uri)
             is_none(kvm.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
-            r = kvm.version
+            r = host.version
         elif args.action == "type":
-            kvm = Host(uri=args.uri)
-            is_none(kvm.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
-            r = kvm.type
+            host = Host(uri=args.uri)
+            is_none(host.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            r = host.type
+        host.disconnect()
   
     print(r)
 
@@ -143,19 +171,28 @@ class Domain(Libvirt):
         self.domain = self.conn.lookupByName(self.name)
         self.isactive = self.domain.isActive()
         self.uuid = self.domain.UUIDString()
-        self.vcpus = { 'current': len(self.domain.vcpus()[0]),
-                       'max': self.domain.maxVcpus() }
-        self.memory = { 'current': self.domain.memoryStats()['actual'],
-                        'max': self.domain.maxMemory() }
+        if self.isactive:
+            self.vcpus = { 'current': len(self.domain.vcpus()[0]),
+                           'max': self.domain.maxVcpus() }
+            self.memory = { 'current': self.domain.memoryStats()['actual'] *1024,
+                            'max': self.domain.maxMemory() *1024 }
+        else:
+            self.vcpus = { 'current': 0,
+                           'max': 0 }
+            self.memory = { 'current': 0,
+                            'max': 0 }
         return self.domain
 
-    def list(self):
+    def list(self, active=None):
         self.domainlist = []
-        print(self.conn.listAllDomains(0))
         try:
-            self.domainlist = [  d.name() for d in self.conn.listAllDomains(0) ]
+            if active is None:
+                self.domainlist = [  d.name() for d in self.conn.listAllDomains(0) ]
+            else:
+                self.domainlist = [  d.name() for d in self.conn.listAllDomains(0) if d.isActive() == active ]
         except:
-            self.domainlist = [ self.conn.lookupById(i).name() for i in self.conn.listDomainsID() ]
+            print("Could not fetch list of domains.", file=sys.stderr)
+            sys.exit(3)
         
         self.domainlist.sort()
         return self.domainlist
@@ -171,13 +208,17 @@ class Net(Libvirt):
         self.uuid = self.net.UUIDString()
         return self.net
 
-    def list(self):
+    def list(self, active=None):
         self.netlist = []
 
         try:
-            self.netlist = [ n.name() for n in self.conn.listAllNetworks(0) ]
+            if active is None:
+                self.netlist = [ n.name() for n in self.conn.listAllNetworks(0) ]
+            else:
+                self.netlist = [ n.name() for n in self.conn.listAllNetworks(0) if n.isActive() == active]
+
         except:
-            self.netlist = self.conn.listNetworks()
+            print("Could not fetch list of networks.", file=sys.stderr)
 
         self.netlist.sort()
         return self.netlist
@@ -196,12 +237,16 @@ class Pool(Libvirt):
         self.isactive = self.pool.isActive()
         self.uuid = self.pool.UUIDString()
 
-    def list(self):
+    def list(self, active=None):
         self.poollist = []
         try:
-            self.poollist = [ p.name() for p in self.conn.listAllStoragePools(0) ]
+            if active is None:
+                self.poollist = [ p.name() for p in self.conn.listAllStoragePools(0) ]
+            else:
+                self.poollist = [ p.name() for p in self.conn.listAllStoragePools(0) if p.isActive() == active ]
         except:
-            self.poollist = self.conn.listStoragePools()
+            print("Could not fetch list of storage pools.", file=sys.stderr)
+            sys.exit(3)
 
         self.poollist.sort()
         return self.poollist
@@ -220,9 +265,9 @@ def list_to_zbx(data, label):
 
 def parse_args():
     valid_resource_types = [ "pool", "net", "domain", "host" ]
-    pool_valid_actions = [ 'list', 'total', 'used', 'free', 'active', 'UUID' ]
-    net_valid_actions = [ 'list', 'active', 'UUID' ]
-    domain_valid_actions = [ 'list', 'active', 'UUID', 'vcpus_current', 'vcpus_max', 'memory_current', 'memory_max' ]
+    pool_valid_actions = [ 'list', 'total', 'used', 'free', 'active', 'UUID', 'count_active', 'count_inactive' ]
+    net_valid_actions = [ 'list', 'active', 'UUID', 'count_active', 'count_inactive' ]
+    domain_valid_actions = [ 'list', 'active', 'UUID', 'vcpus_current', 'vcpus_max', 'memory_current', 'memory_max', 'count_active', 'count_inactive' ]
     host_valid_actions = [ "version", "type" ]
 
     parser = argparse.ArgumentParser(description='Return KVM information for Zabbix parsing')
@@ -235,20 +280,20 @@ def parse_args():
     
     args = parser.parse_args()
     if args.resource not in valid_resource_types:
-        parser.error("Resource has to be one of: "+", ".join(valid_resource_types))
+        parser.error("The resource specified (%s) is not supported. Please select one of: %s." % (args.resource, ", ".join(valid_resource_types)))
 
     if args.resource == "pool":
         if args.action not in pool_valid_actions:
-            parser.error("Action hass to be one of: "+", ".join(pool_valid_actions))
+            parser.error("The specified storage pool action (%s) is not supported. Please select one of: %s." % (args.action, ", ".join(pool_valid_actions)))
     elif args.resource == "net":
         if args.action not in net_valid_actions:
-            parser.error("Action hass to be one of: "+", ".join(net_valid_actions))
+            parser.error("The specified network action (%s) is not supported. Please select one of: %s." % (args.action,  ", ".join(net_valid_actions)))
     elif args.resource == "domain":
         if args.action not in domain_valid_actions:
-            parser.error("Action hass to be one of: "+", ".join(domain_valid_actions))
+            parser.error("The specified domain action (%s) is not supported. Please select one of: %s." % (args.action, ", ".join(domain_valid_actions)))
     elif args.resource == "host":
         if args.action not in host_valid_actions:
-            parser.error("Action hass to be one of: "+", ".join(host_valid_actions))
+            parser.error("The specified host action (%s) is not supported. Please select one of: %s." % (args.action, ", ".join(host_valid_actions)))
 
     return args
 
