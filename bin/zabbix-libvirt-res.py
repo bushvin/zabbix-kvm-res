@@ -116,7 +116,7 @@ def main():
     elif args.resource == "host":
         if args.action == "version":
             host = Host(uri=args.uri)
-            is_none(kvm.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
+            is_none(host.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
             r = host.version
         elif args.action == "type":
             host = Host(uri=args.uri)
