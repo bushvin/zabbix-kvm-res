@@ -20,7 +20,7 @@ def main():
         if args.action == "list":
             pool = Pool(uri=args.uri)
             is_none(pool.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
-            r = json.dumps(list_to_zbx(pool.list(), '{#POOLNAME}'), sort_keys=True, encoding='utf-8', indent=2)
+            r = json.dumps(list_to_zbx(pool.list(), '{#POOLNAME}'), sort_keys=True, indent=2)
         elif args.action == "count_active":
             pool = Pool(uri=args.uri)
             is_none(pool.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
@@ -55,7 +55,7 @@ def main():
         if args.action == "list":
             net = Net(uri=args.uri)
             is_none(net.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
-            r = json.dumps(list_to_zbx(net.list(), '{#NETNAME}'), sort_keys=True, encoding='utf-8', indent=2)
+            r = json.dumps(list_to_zbx(net.list(), '{#NETNAME}'), sort_keys=True, indent=2)
         elif args.action == "count_active":
             net = Net(uri=args.uri)
             is_none(net.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
@@ -78,7 +78,7 @@ def main():
         if args.action == "list":
             dom = Domain(uri=args.uri)
             is_none(dom.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
-            r = json.dumps(list_to_zbx(dom.list(), '{#DOMAINNAME}'), sort_keys=True, encoding='utf-8', indent=2)
+            r = json.dumps(list_to_zbx(dom.list(), '{#DOMAINNAME}'), sort_keys=True, indent=2)
         elif args.action == "count_active":
             dom = Domain(uri=args.uri)
             is_none(dom.conn,"Could not connect to KVM using '%s'." % args.uri, 2)
