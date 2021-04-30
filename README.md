@@ -13,9 +13,11 @@ Dependencies
 
 Installation
 ============
+## Perform these steps on your KVM server:
+
 1. copy bin/zabbix-libvirt-res.py to /usr/local/bin/
-2. copy zabbix_agentd.conf/libvirt.conf to /etc/zabbix/zabbix_agentd.d/
-3. compile selinux module & import (as root)
+1. copy zabbix_agentd.conf/libvirt.conf to /etc/zabbix/zabbix_agentd.d/
+1. compile selinux module & import (as root)
 
 ```
     ]# cd selinux
@@ -24,10 +26,14 @@ Installation
     ]# semodule_package -o zabbix_agent_libvirt.pp -m zabbix_agent_libvirt.mod
     ]# semodule -i zabbix_agent_libvirt.pp
 ```
-4. restart zabbix-agent daemon
-5. import zbx_templates/zabbix_libvirt-4.xml into the Zabbix templates
-6. apply template to libvirt system
-7. drink coffee and enjoy
+1. restart zabbix-agent daemon
+
+## Perform these steps on your Zabbix server (through the web gui)
+1. import zbx_templates/zabbix_libvirt-4.xml into the Zabbix templates
+1. apply template to libvirt system
+
+## Perform these steps while reclining in a chair, sofa or bed
+1. drink coffee and enjoy
 
 Acknowledgements
 ================
